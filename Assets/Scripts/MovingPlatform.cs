@@ -2,82 +2,85 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlatform : MonoBehaviour
+namespace Personal
 {
-    public Transform targetA;
-    public Transform targetB;
-    [SerializeField] private float _speed = 1.0f;
-
-    private bool _moveForwards = true;
-
-    // Update is called once per frame
-    void FixedUpdate() // physics update. Consistent. Useful for things require physics movement.
+    public class MovingPlatform : MonoBehaviour
     {
-        MovementBehaviour();   
-    }
+        public Transform targetA;
+        public Transform targetB;
+        [SerializeField] private float _speed = 1.0f;
 
-    #region Movement
+        private bool _moveForwards = true;
 
-    private void MovementBehaviour()
-    {
-        if (_moveForwards)
+        // Update is called once per frame
+        void FixedUpdate() // physics update. Consistent. Useful for things require physics movement.
         {
-            MoveToPosition(targetB.position);
+            MovementBehaviour();
+        }
 
-            if (CheckPositionReached(targetB.position))
+        #region Movement
+
+        private void MovementBehaviour()
+        {
+            if (_moveForwards)
             {
-                _moveForwards = !_moveForwards;
+                MoveToPosition(targetB.position);
+
+                if (CheckPositionReached(targetB.position))
+                {
+                    _moveForwards = !_moveForwards;
+                }
+            }
+            else
+            {
+                MoveToPosition(targetA.position);
+
+                if (CheckPositionReached(targetA.position))
+                {
+                    _moveForwards = !_moveForwards;
+                }
             }
         }
-        else
-        {
-            MoveToPosition(targetA.position);
 
-            if (CheckPositionReached(targetA.position))
+        private void MoveToPosition(Vector3 targetPosition)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * _speed);
+        }
+
+        private bool CheckPositionReached(Vector3 targetPosition)
+        {
+            if (transform.position != targetPosition)
             {
-                _moveForwards = !_moveForwards;
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
-    }
+        #endregion
 
-    private void MoveToPosition(Vector3 targetPosition)
-    {
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * _speed);
-    }
+        #region Collision_Detection
 
-    private bool CheckPositionReached(Vector3 targetPosition)
-    {
-        if (transform.position != targetPosition)
+        private void OnTriggerEnter(Collider other)
         {
-            return false;
+            if (other.CompareTag("Player"))
+            {
+                other.gameObject.transform.parent = this.transform;
+
+            }
         }
-        else
+
+        private void OnTriggerExit(Collider other)
         {
-            return true;
+            if (other.CompareTag("Player"))
+            {
+                other.gameObject.transform.parent = null;
+
+            }
         }
+
+        #endregion
+
     }
-    #endregion
-
-    #region Collision_Detection
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.gameObject.transform.parent = this.transform;
-
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.gameObject.transform.parent = null;
-
-        }
-    }
-
-    #endregion
-
 }

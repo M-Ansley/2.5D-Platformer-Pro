@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+namespace Personal
 {
-    [SerializeField] private int _value = 1;
-
-    private void OnTriggerEnter(Collider other)
+    public class Coin : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        [SerializeField] private int _value = 1;
+
+        private void OnTriggerEnter(Collider other)
         {
-            GameEvents.current.CoinsCollected(_value);
-            Destroy(gameObject);
+            if (other.CompareTag("Player"))
+            {
+                GameEvents.current.CoinsCollected(_value);
+                Destroy(gameObject);
+            }
         }
-    }    
+    }
 }

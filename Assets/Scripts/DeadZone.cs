@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeadZone : MonoBehaviour
+namespace Personal
 {
-    private void OnTriggerEnter(Collider other)
+    public class DeadZone : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        private void OnTriggerEnter(Collider other)
         {
-            other.GetComponent<Player>().PlayerDied();
+            if (other.CompareTag("Player"))
+            {
+                other.GetComponent<Player>().PlayerDied();
+            }
         }
     }
 }

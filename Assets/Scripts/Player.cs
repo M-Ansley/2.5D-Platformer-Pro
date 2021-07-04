@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     [Header("Player Movement")]
     private CharacterController _controller;
     [SerializeField] private float _speed = 4f;
-    private float _gravity = 1f;
+    private float _gravity = .8f;
     [SerializeField] private float _jumpHeight = 15.0f;
     private float _yVelocity;
     private bool _canDoubleJump = true;
@@ -23,13 +24,19 @@ public class Player : MonoBehaviour
     }
 
 
+    [Header("Player Lives")]
+    private UIManager _uiManager;
+    [SerializeField] private int _lives = 3;
+    public Transform _playerStartTransform;
+
     void Start()
     {
+       // _playerStartPostition = transform.position;
         _controller = GetComponent<CharacterController>();
         GameEvents.current.coinsCollected.AddListener(CoinsCollected);
     }
 
-    void Update()
+    void Update() // physics update. Consistent. Useful for things require physics movement.
     {
         float horizontalMovement = Input.GetAxis("Horizontal");
         Vector3 direction = new Vector3(horizontalMovement, 0, 0);
@@ -72,5 +79,21 @@ public class Player : MonoBehaviour
     private void CoinsCollected(int numOfCoins)
     {
         _playerCoins += numOfCoins;  
+    }
+
+    public void PlayerDied()
+    {
+        if (_lives > 0)
+        {
+            _lives--;
+            _controller.enabled = false; // need to remember to do this
+            transform.position = _playerStartTransform.position;
+            _controller.enabled = true; 
+            GameEvents.current.PlayerLivesRemaining(_lives);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }      
     }
 }

@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+public class DeadZone : MonoBehaviour
 {
-    [SerializeField] private int _value = 1;
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            GameEvents.current.CoinsCollected(_value);
-            Destroy(gameObject);
+            other.GetComponent<Player>().PlayerDied();
         }
-    }    
+    }
 }

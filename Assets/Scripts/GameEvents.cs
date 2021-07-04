@@ -31,11 +31,17 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+
+    public IntEvent playerLivesRemaining;
+
+    public void PlayerLivesRemaining (int lives)
+    {
+        if (playerLivesRemaining != null)
+        {
+            playerLivesRemaining.Invoke(lives);
+        }
+    }
+
+
     #endregion
-
-
-
-
-
-
 }

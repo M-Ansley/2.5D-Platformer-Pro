@@ -2,37 +2,98 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Elevator_Panel : MonoBehaviour
+namespace Personal
 {
-    public GameObject _button;
-    private bool _buttonPressed = false;
-    private bool _playerEntered = false;
-
-    private void Update()
+    public class Elevator_Panel : MonoBehaviour
     {
-        if (_playerEntered)
+        [SerializeField] private Elevator _elevator = null;
+
+        public GameObject _button;
+        private bool _buttonPressed = false;
+
+        private Player _player = null;
+
+        [SerializeField] private int _coinsNeeded = 8;
+
+        private int coinsToProgress = 4;
+
+        private bool _playerEntered = false;
+
+        private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (_playerEntered)
             {
-                _button.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
-                _buttonPressed = true;
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    print(_player.PlayerCoins.ToString());
+                    if (_player.PlayerCoins >= _coinsNeeded)  // Sufficient coins
+                    {
+                        SetButtonColour(Color.green);
+                        _elevator.CallElevator();
+                        _buttonPressed = true;
+                        print("Sufficient coins");
+                    }
+                    else // Insufficient coins. 
+                    {
+                        print("Insufficient coins");
+                    }
+                }
             }
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        public void SetButtonColour(Color colour)
         {
-            _playerEntered = true;
+            _button.GetComponent<MeshRenderer>().material.SetColor("_Color", colour);
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+
+        private void OnTriggerEnter(Collider other)
         {
-            _playerEntered = false;
+            if (other.CompareTag("Player"))
+            {
+                if (other.GetComponent<Player>() != null)
+                {
+                    print("Player entered");
+                    _player = other.GetComponent<Player>();
+                    _playerEntered = true;
+                }
+            }
         }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                print("Player exited");
+                _playerEntered = false;
+            }
+        }
+
+        //private void OnTriggerStay(Collider other)
+        //{
+        //    if (other.CompareTag("Player"))
+        //    {
+        //        if (other.GetComponent<Player>() != null)
+        //        {
+        //            _player = other.GetComponent<Player>();
+
+        //            if (Input.GetKeyDown(KeyCode.E))
+        //            {
+        //                print(_player.PlayerCoins.ToString());
+        //                if (_player.PlayerCoins >= _coinsNeeded)  // Sufficient coins
+        //                {
+        //                    _button.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.green);
+        //                    _elevator.CallElevator();
+        //                    _buttonPressed = true;
+        //                    print("Sufficient coins");
+        //                }
+        //                else // Insufficient coins. 
+        //                {
+        //                    print("Insufficient coins");
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

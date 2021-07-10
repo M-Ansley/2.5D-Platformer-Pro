@@ -4,40 +4,50 @@ using UnityEngine;
 
 namespace Personal
 {
-    public class MovingPlatform : MonoBehaviour
+
+
+    public class Elevator : MonoBehaviour
     {
+        [SerializeField] private Elevator_Panel _elevatorPanel = null;
+
         public Transform targetA;
         public Transform targetB;
         [SerializeField] private float _speed = 1.0f;
 
-        private bool _moveForwards = true;
+        private bool _movingDown = false;
 
-        // Update is called once per frame
-        void FixedUpdate() // physics update. Consistent. Useful for things require physics movement.
+        public void CallElevator()
         {
-            MovementBehaviour();
+            _movingDown = !_movingDown;
+            if (_elevatorPanel != null)
+            {
+                _elevatorPanel.SetButtonColour(Color.green);
+            }
         }
 
-        #region Movement
-
-        private void MovementBehaviour()
+        // Update is called once per frame
+        void FixedUpdate()
         {
-            if (_moveForwards)
+            if (_movingDown)
             {
                 MoveToPosition(targetB.position);
-
                 if (CheckPositionReached(targetB.position))
                 {
-                    _moveForwards = !_moveForwards;
+                    if (_elevatorPanel != null)
+                    {
+                        _elevatorPanel.SetButtonColour(Color.red);
+                    }
                 }
             }
             else
             {
                 MoveToPosition(targetA.position);
-
                 if (CheckPositionReached(targetA.position))
                 {
-                    _moveForwards = !_moveForwards;
+                    if (_elevatorPanel != null)
+                    {
+                        _elevatorPanel.SetButtonColour(Color.red);
+                    }
                 }
             }
         }
@@ -58,28 +68,5 @@ namespace Personal
                 return true;
             }
         }
-        #endregion
-
-        #region Collision_Detection
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Player"))
-            {
-                other.gameObject.transform.parent = this.transform;
-
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.CompareTag("Player"))
-            {
-                other.gameObject.transform.parent = null;
-
-            }
-        }
-
-        #endregion
     }
 }

@@ -26,10 +26,19 @@ namespace Personal
             }
         }
 
+        protected int myProtectedVar = 3;
+
 
         [Header("Player Lives")]
         private UIManager _uiManager;
         [SerializeField] private int _lives = 3;
+        public int Lives
+        {
+            get
+            {
+                return _lives;
+            }
+        }
         public Transform _playerStartTransform;
 
         void Start()
@@ -97,7 +106,7 @@ namespace Personal
             else
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
-        }
+            }            
+        }        
     }
 }

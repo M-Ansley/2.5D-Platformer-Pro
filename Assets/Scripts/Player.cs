@@ -15,6 +15,14 @@ namespace Personal
         [SerializeField] private float _jumpHeight = 15.0f;
         private float _yVelocity;
         private bool _canDoubleJump = true;
+        private Vector3 _direction;
+        private Vector3 _velocity;
+
+        private Vector3 _wallJumpDirection;
+
+        private bool _canWallJump = false;
+
+        private float _pushPower = 2f;
 
         [Header("Player Inventory")]
         private int _playerCoins;
@@ -51,11 +59,11 @@ namespace Personal
         void Update() // physics update. Consistent. Useful for things require physics movement.
         {
             float horizontalMovement = Input.GetAxis("Horizontal");
-            Vector3 direction = new Vector3(horizontalMovement, 0, 0);
-            Vector3 velocity = direction * _speed;
 
             if (_controller.isGrounded)
             {
+                _direction = new Vector3(horizontalMovement, 0, 0);
+                _velocity = _direction * _speed;
                 _canDoubleJump = true;
                 if (Input.GetButtonDown("Jump"))
                 {
@@ -64,29 +72,53 @@ namespace Personal
             }
             else
             {
-
-                if (_canDoubleJump)
+                if (Input.GetButtonDown("Jump") && !_canWallJump)
                 {
-                    if (Input.GetButtonDown("Jump"))
+                    if (_canDoubleJump)
                     {
                         _yVelocity += _jumpHeight;
                         _canDoubleJump = false;
                     }
-                    else
-                    {
-                        _yVelocity -= _gravity;
-                    }
                 }
-                else
+                else if (Input.GetButtonDown("Jump") && _canWallJump)
                 {
-                    _yVelocity -= _gravity;
+                    _yVelocity = _jumpHeight;
+                    _velocity = _wallJumpDirection * _speed;
                 }
-            }
-            velocity.y = _yVelocity;
 
-            _controller.Move(velocity * Time.deltaTime);
+                _yVelocity -= _gravity;
+            }
+            _velocity.y = _yVelocity;
+
+            _controller.Move(_velocity * Time.deltaTime);
         }
 
+        private void OnControllerColliderHit(ControllerColliderHit hit) // whenever the character controller hits something
+        {
+
+            if (hit.transform.CompareTag("MoveableObject"))
+            {
+                Rigidbody rb = hit.collider.attachedRigidbody;
+                if (rb != null && !rb.isKinematic && hit.moveDirection.y < 0.3f)
+                {
+                    Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+                    rb.velocity = pushDir * _pushPower;
+                }
+            }
+
+            if (!_controller.isGrounded && hit.transform.CompareTag("Wall"))
+            {
+                _canWallJump = true;
+                _wallJumpDirection = hit.normal;
+                Debug.DrawLine(hit.point, hit.normal + hit.point, Color.blue); // normal is perpendicular to what we've hit   
+                                                                               // https://forum.unity.com/threads/raycasthit-normal-not-correct.776591/
+
+            }
+            else
+            {
+                _canWallJump = false;
+            }
+        }
 
         private void CoinsCollected(int numOfCoins)
         {
@@ -106,7 +138,37 @@ namespace Personal
             else
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }            
-        }        
+            }
+        }
     }
 }
+
+
+
+//if (Input.GetButtonDown("Jump"))
+//{
+//    if (_canWallJump)
+//    {
+//        _velocity = _wallJumpDirection * _speed;
+//        _yVelocity += _jumpHeight;
+//        // _yVelocity += _jumpHeight;
+//        // _canWallJump = false;
+//    }
+//    else
+//    {
+//        if (_canDoubleJump)
+//        {
+//            _yVelocity += _jumpHeight;
+//            _canDoubleJump = false;
+//        }
+//        else
+//        {
+//            _yVelocity -= _gravity;
+//        }
+//    }
+
+//}
+//else
+//{
+//    _yVelocity -= _gravity;
+//}

@@ -492,8 +492,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 689cd80d8f65ead48a1d2b7cdee26642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _elevator: {fileID: 658469782}
   _button: {fileID: 131171744}
+  _elevator: {fileID: 658469782}
   _coinsNeeded: 4
 --- !u!1 &580366883
 GameObject:
@@ -643,6 +643,7 @@ GameObject:
   - component: {fileID: 658469780}
   - component: {fileID: 658469782}
   - component: {fileID: 658469779}
+  - component: {fileID: 658469783}
   m_Layer: 0
   m_Name: Elevator
   m_TagString: Untagged
@@ -743,6 +744,19 @@ MonoBehaviour:
   targetA: {fileID: 1459110570}
   targetB: {fileID: 228508470}
   _speed: 2.5
+--- !u!65 &658469783
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658469777}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 4.189371, z: 1}
+  m_Center: {x: 0, y: 2.2864532, z: 0}
 --- !u!1 &665404931
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,7 +3282,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1798249445}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.9, y: 26.6, z: 0}
+  m_LocalPosition: {x: 18.3, y: 7.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}

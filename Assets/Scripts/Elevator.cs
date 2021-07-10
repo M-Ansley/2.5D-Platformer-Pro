@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Personal
-{
-
-
+{    
     public class Elevator : MonoBehaviour
     {
         [SerializeField] private Elevator_Panel _elevatorPanel = null;

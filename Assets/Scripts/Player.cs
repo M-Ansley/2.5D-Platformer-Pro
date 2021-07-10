@@ -112,7 +112,6 @@ namespace Personal
                 _wallJumpDirection = hit.normal;
                 Debug.DrawLine(hit.point, hit.normal + hit.point, Color.blue); // normal is perpendicular to what we've hit   
                                                                                // https://forum.unity.com/threads/raycasthit-normal-not-correct.776591/
-
             }
             else
             {
